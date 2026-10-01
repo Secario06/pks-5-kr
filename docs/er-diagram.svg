@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="600" viewBox="0 0 1000 600" font-family="Helvetica, Arial, sans-serif">
+  <style>
+    .box   { fill: #ffffff; stroke: #33475b; stroke-width: 2; }
+    .head  { fill: #33475b; }
+    .htext { fill: #ffffff; font-size: 15px; font-weight: bold; }
+    .field { font-size: 13px; fill: #1b2733; }
+    .key   { font-size: 13px; fill: #b8541a; font-weight: bold; }
+    .note  { font-size: 11px; fill: #6b7885; }
+    .rel   { stroke: #33475b; stroke-width: 2; fill: none; }
+    .card  { font-size: 14px; fill: #33475b; font-weight: bold; }
+    .title { font-size: 18px; font-weight: bold; fill: #1b2733; }
+    .sep   { stroke: #d4dae0; stroke-width: 1; }
+  </style>
+
+  <rect width="1000" height="600" fill="#f7f9fb"/>
+  <text x="30" y="26" class="title">ER-диаграмма БД yoga_studio — ИС «Йога-студия: запись на занятие»</text>
+
+  <!-- ================= clients ================= -->
+  <g>
+    <rect x="30" y="50" width="320" height="190" rx="6" class="box"/>
+    <path d="M30 56 a6 6 0 0 1 6 -6 h308 a6 6 0 0 1 6 6 v28 h-320 z" class="head"/>
+    <text x="46" y="74" class="htext">clients — клиенты студии</text>
+    <line x1="30" y1="110" x2="350" y2="110" class="sep"/>
+    <text x="46" y="104" class="key">PK  id : SERIAL</text>
+    <text x="46" y="130" class="field">full_name : VARCHAR(100)</text>
+    <text x="250" y="130" class="note">NOT NULL</text>
+    <text x="46" y="156" class="field">phone : VARCHAR(20)</text>
+    <text x="240" y="156" class="note">NOT NULL, UNIQUE</text>
+    <text x="46" y="182" class="field">email : VARCHAR(100)</text>
+    <text x="270" y="182" class="note">UNIQUE</text>
+    <text x="46" y="208" class="field">birth_date : DATE</text>
+    <text x="250" y="208" class="note">NOT NULL</text>
+    <text x="46" y="232" class="field">registered_at : TIMESTAMP</text>
+  </g>
+
+  <!-- ================= yoga_classes ================= -->
+  <g>
+    <rect x="640" y="50" width="330" height="242" rx="6" class="box"/>
+    <path d="M640 56 a6 6 0 0 1 6 -6 h318 a6 6 0 0 1 6 6 v28 h-330 z" class="head"/>
+    <text x="656" y="74" class="htext">yoga_classes — расписание занятий</text>
+    <line x1="640" y1="110" x2="970" y2="110" class="sep"/>
+    <text x="656" y="104" class="key">PK  id : SERIAL</text>
+    <text x="656" y="130" class="field">title : VARCHAR(100)</text>
+    <text x="880" y="130" class="note">NOT NULL</text>
+    <text x="656" y="156" class="field">instructor : VARCHAR(100)</text>
+    <text x="880" y="156" class="note">NOT NULL</text>
+    <text x="656" y="182" class="field">level : VARCHAR(20)</text>
+    <text x="820" y="182" class="note">CHECK (enum)</text>
+    <text x="656" y="208" class="field">starts_at : TIMESTAMP</text>
+    <text x="880" y="208" class="note">NOT NULL</text>
+    <text x="656" y="234" class="field">duration_minutes : INTEGER</text>
+    <text x="656" y="260" class="field">capacity : INTEGER</text>
+    <text x="840" y="260" class="note">CHECK 1..40</text>
+    <text x="656" y="284" class="field">price : NUMERIC(10,2)</text>
+    <text x="850" y="284" class="note">CHECK &gt;= 0</text>
+  </g>
+  <text x="640" y="312" class="note">UNIQUE (instructor, starts_at)</text>
+
+  <!-- ================= enrollments ================= -->
+  <g>
+    <rect x="330" y="380" width="360" height="190" rx="6" class="box"/>
+    <path d="M330 386 a6 6 0 0 1 6 -6 h348 a6 6 0 0 1 6 6 v28 h-360 z" class="head"/>
+    <text x="346" y="404" class="htext">enrollments — записи на занятия</text>
+    <line x1="330" y1="440" x2="690" y2="440" class="sep"/>
+    <text x="346" y="434" class="key">PK  id : SERIAL</text>
+    <text x="346" y="460" class="key">FK  client_id : INTEGER</text>
+    <text x="560" y="460" class="note">→ clients.id</text>
+    <text x="346" y="486" class="key">FK  class_id : INTEGER</text>
+    <text x="540" y="486" class="note">→ yoga_classes.id</text>
+    <text x="346" y="512" class="field">status : VARCHAR(20)</text>
+    <text x="540" y="512" class="note">CHECK (enum, 5 значений)</text>
+    <text x="346" y="538" class="field">created_at : TIMESTAMP</text>
+    <text x="346" y="562" class="field">comment : VARCHAR(255)</text>
+  </g>
+  <text x="330" y="588" class="note">UNIQUE (client_id, class_id) — повторная запись клиента на то же занятие запрещена</text>
+
+  <!-- ================= связь clients → enrollments ================= -->
+  <polyline points="190,240 190,330 400,330 400,380" class="rel"/>
+  <line x1="380" y1="368" x2="400" y2="380" class="rel"/>
+  <line x1="420" y1="368" x2="400" y2="380" class="rel"/>
+  <line x1="400" y1="364" x2="400" y2="380" class="rel"/>
+  <text x="200" y="264" class="card">1</text>
+  <text x="410" y="360" class="card">∞</text>
+  <text x="205" y="322" class="note">оформляет</text>
+
+  <!-- ================= связь yoga_classes → enrollments ================= -->
+  <polyline points="805,292 805,340 620,340 620,380" class="rel"/>
+  <line x1="600" y1="368" x2="620" y2="380" class="rel"/>
+  <line x1="640" y1="368" x2="620" y2="380" class="rel"/>
+  <line x1="620" y1="364" x2="620" y2="380" class="rel"/>
+  <text x="818" y="308" class="card">1</text>
+  <text x="630" y="360" class="card">∞</text>
+  <text x="660" y="334" class="note">содержит</text>
+</svg>

@@ -1,0 +1,10 @@
+target/
+export/
+docs/
+*.md
+.git/
+.gitignore
+.idea/
+*.iml
+.vscode/
+.DS_Store
